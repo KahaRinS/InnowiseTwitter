@@ -11,13 +11,14 @@
           <a href="{% url 'signup' %}">Sign Up</a>
           <a href="{% url 'login' %}">Login</a>
     {% endif %}
+    <p> {% for el in fols %} {{ el.pk }} {% endfor %}</p>
 {% endblock %}
 
 
 {% block twit %}
 {% for el in post %}
 <div class="twit">
-    <p class="twit_page">{{ el.page.owner }}</p>
+    <a href="{% url 'page' el.page.pk %}" class="twit_page">{{ el.page.owner }}</a>
     <p class="twit_date">{{ el.created_at }}</p>
     <p class="twit_content">{{ el.content }}</p>
 </div>

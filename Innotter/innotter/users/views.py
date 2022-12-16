@@ -7,6 +7,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView
 # Create your views here.
 
+
+
+
+
+
 def render_signup_page(request):
     user = CustomUser.objects.all()
     return render(request, 'users/signup.html', {'user': user})
