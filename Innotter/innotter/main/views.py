@@ -11,16 +11,28 @@ from rest_framework.views import APIView
 
 class PageAPIView(APIView):
     def get(self, request):
-        lst = Page.objects.all().values()
-        return Response({'posts': list(lst)})
+        p = Page.objects.all()
+        return Response({'pages': PageSerializer(p, many=True).data})
     def post(self, request):
-        post_new = Page.objects.create(
-            name=request.data['name'],
-            uuid=request.data['uuid'],
-            owner_id=request.data['owner_id'],
-            description=request.data['description']
-        )
-        return Response({'post': model_to_dict(post_new)})
+        serializer = PageSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'page': serializer.data})
+
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error":"Method PUT not allowed"})
+
+        try:
+            instance = Page.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object does not exists"})
+
+        serializer = PageSerializer(data=request.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"page": serializer.data})
 
 #class PageAPIView(generics.ListAPIView):
 #    queryset = Page.objects.all()

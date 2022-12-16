@@ -6,7 +6,7 @@ class Tag(models.Model):
         return self.name
 
 class Page(models.Model):
-    name = models.CharField(max_length=80)
+    name = models.CharField(max_length=80,  unique=True)
     uuid = models.CharField(max_length=30, unique=True)
     description = models.TextField()
     tags = models.ManyToManyField('main.Tag', related_name='pages', blank=True)
