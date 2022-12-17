@@ -13,7 +13,7 @@ from .models import Page
 #         self.description = description
 #         self.owner_id = owner_id
 
-class PageSerializer(serializers.Serializer):
+class PageSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=80)
     description = serializers.CharField()
     owner_id = serializers.IntegerField()
@@ -24,7 +24,7 @@ class PageSerializer(serializers.Serializer):
         return Page.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get("name", instance.tittle)
+        instance.name = validated_data.get("name", instance.name)
         instance.description = validated_data.get("description", instance.description)
         instance.owner_id = validated_data.get("owner_id", instance.owner_id)
         instance.uuid = validated_data.get("uuid", instance.uuid)

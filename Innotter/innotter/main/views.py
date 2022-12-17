@@ -13,6 +13,10 @@ class PageAPIView(APIView):
     def get(self, request):
         p = Page.objects.all()
         return Response({'pages': PageSerializer(p, many=True).data})
+    # def get(self, request, *args, **kwargs):
+    #     pk = kwargs.get("pk", None)
+    #     p = Page.objects.get(pk=pk)
+    #     return Response({'pages': PageSerializer(p).data})
     def post(self, request):
         serializer = PageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -33,6 +37,16 @@ class PageAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"page": serializer.data})
+    def delete(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error":"Methode DELETE not allowed"})
+        try:
+            instance = Page.objects.get(pk=pk)
+        except:
+            return Response({"error": "Object does not exists"})
+        instance.delete()
+        return Response({"page":"delete page" + str(pk)})
 
 #class PageAPIView(generics.ListAPIView):
 #    queryset = Page.objects.all()

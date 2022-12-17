@@ -20,6 +20,7 @@ from main.views import PageAPIView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/pagelist/', PageAPIView.as_view()),
+    path('api/v1/pagelist/<int:pk>/', PageAPIView.as_view()),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', include('main.urls')),
     path('users/', include('users.urls'))
