@@ -1,10 +1,9 @@
 import io
-
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 
-from .models import Page
+from .models import Page, Post, Tag
 
 
 # class PageModel:
@@ -14,23 +13,20 @@ from .models import Page
 #         self.owner_id = owner_id
 
 class PageSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=80)
-    description = serializers.CharField()
-    owner_id = serializers.IntegerField()
-    uuid = serializers.CharField(max_length=30)
-    is_private = serializers.BooleanField(default=False)
+    class Meta:
+        model = Page
+        fields = "__all__"
 
-    def create(self, validated_data):
-        return Page.objects.create(**validated_data)
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = "__all__"
 
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get("name", instance.name)
-        instance.description = validated_data.get("description", instance.description)
-        instance.owner_id = validated_data.get("owner_id", instance.owner_id)
-        instance.uuid = validated_data.get("uuid", instance.uuid)
-        instance.is_private = validated_data.get("is_private", instance.is_private)
-        instance.save()
-        return instance
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
+
 
 # def encode():
 #     model = PageModel('second Love Page', 'Description: Love Page second bla vla', 8)

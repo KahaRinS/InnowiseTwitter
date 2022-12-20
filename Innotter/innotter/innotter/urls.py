@@ -15,14 +15,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from main.views import PageAPIView
+from main.views import *
+from rest_framework import routers
+
+
+RouterPage = routers.SimpleRouter()
+RouterPage.register(r'page', PageViewSet)
+
+RouterPost = routers.SimpleRouter()
+RouterPost.register(r'post', PostViewSet)
+
+RouterTag = routers.SimpleRouter()
+RouterTag.register(r'tag', TagViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/pagelist/', PageAPIView.as_view()),
-    path('api/v1/pagelist/<int:pk>/', PageAPIView.as_view()),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('main.urls')),
-    path('users/', include('users.urls'))
+    path('api/v1/', include(RouterPage.urls)),
+    path('api/v1/', include(RouterPost.urls)),
+    path('api/v1/', include(RouterTag.urls)),
+
+
+    # path('api/v1/pagelist/<int:pk>/', PageViewSet.as_view({'put': 'update'})),
+    # path('accounts/', include('django.contrib.auth.urls')),
+    # path('', include('main.urls')),
+    # path('users/', include('users.urls'))
 ]
 
