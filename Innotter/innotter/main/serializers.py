@@ -13,6 +13,7 @@ from .models import Page, Post, Tag
 #         self.owner_id = owner_id
 
 class PageSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Page
         fields = "__all__"

@@ -20,6 +20,9 @@ class Page(models.Model):
     unblock_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
+        # followers = []
+        # for fol in self.followers:
+        #
         return self.name
 
 class Post(models.Model):

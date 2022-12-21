@@ -36,8 +36,8 @@ urlpatterns = [
 
 
     # path('api/v1/pagelist/<int:pk>/', PageViewSet.as_view({'put': 'update'})),
-    # path('accounts/', include('django.contrib.auth.urls')),
-    # path('', include('main.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('main.urls')),
     # path('users/', include('users.urls'))
 ]
 
