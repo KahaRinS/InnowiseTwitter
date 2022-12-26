@@ -67,25 +67,25 @@ class PostViewSet(viewsets.ModelViewSet):
 #     serializer_class = PageSerializer
 
 
-def render_main_page(request):
-    post = Post.objects.all()
-    user = CustomUser.objects.all()
-    page = Page.objects.all()
-    followers = Page.objects.get(name="SashasPage").followers.all()
-    return render(request, 'main/index.html', {'post': post, 'user': user, 'page': page, 'fols': followers})
+# def render_main_page(request):
+#     post = Post.objects.all()
+#     user = CustomUser.objects.all()
+#     page = Page.objects.all()
+#     followers = Page.objects.get(name="SashasPage").followers.all()
+#     return render(request, 'main/index.html', {'post': post, 'user': user, 'page': page, 'fols': followers})
 #
 # def index(request):
 #     return render(request, 'main/index.html')
 #
 #
 # #класс для отображения странички пользователя
-class PageDetailView(DetailView):
-    #Добавление дополнительных моделей в DetailView
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        followers = Page.objects.get(name="SashasPage").followers.all()
-        data['page_title'] = followers
-        return data
-    model = Page
-    template_name = "main/pageview.html"
-    context_object_name = 'page'
+# class PageDetailView(DetailView):
+#     #Добавление дополнительных моделей в DetailView
+#     def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
+#         followers = Page.objects.get(name="SashasPage").followers.all()
+#         data['page_title'] = followers
+#         return data
+#     model = Page
+#     template_name = "main/pageview.html"
+#     context_object_name = 'page'
