@@ -1,6 +1,10 @@
 .env
 .env.dev
 postgres_data
-__pycache__
+__pycache__/
+*.py[cod]
 .DS_Store 
 .idea
+
+*.log
+*.pot

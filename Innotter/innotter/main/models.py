@@ -29,5 +29,4 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
-        page_title = f'{self.page}  {self.created_at}'
-        return page_title
+        return f'{self.page}  {self.created_at}'
