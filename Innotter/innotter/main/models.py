@@ -20,9 +20,6 @@ class Page(models.Model):
     unblock_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        # followers = []
-        # for fol in self.followers:
-        #
         return self.name
 
 class Post(models.Model):
@@ -32,5 +29,5 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
-        page_title = str(self.page) + "  " + str(self.created_at)
+        page_title = f'{self.page}  {self.created_at}'
         return page_title

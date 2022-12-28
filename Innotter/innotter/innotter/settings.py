@@ -26,12 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -85,10 +85,10 @@ WSGI_APPLICATION = 'innotter.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("DATABASE_NAME"),
-        'USER': os.environ.get("DATABASE_USER", "user"),
-        'PASSWORD': os.environ.get("DATABASE_PASS", "password"),
-        'HOST': os.environ.get("SQL_HOST", "127.0.0.1"),
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER', 'user'),
+        'PASSWORD': os.environ.get('DATABASE_PASS', 'password'),
+        'HOST': os.environ.get('SQL_HOST', '127.0.0.1'),
         'PORT': '',
     }
 }
@@ -132,7 +132,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
-    BASE_DIR / "main/static",
 ]
 
 # Default primary key field type
@@ -141,5 +140,3 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.CustomUser'
 
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "login"
