@@ -26,11 +26,11 @@ class Page(models.Model):
     def __str__(self):
         return self.name
 
-class Like(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
+# class Like(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='likes', on_delete=models.CASCADE)
+#     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+#     object_id = models.PositiveIntegerField()
+#     content_object = GenericForeignKey('content_type', 'object_id')
 
 class Post(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='posts')
@@ -38,10 +38,8 @@ class Post(models.Model):
     reply_to = models.ForeignKey('main.Post', on_delete=models.SET_NULL, null=True, blank=True, related_name='replies')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    likes = GenericRelation(Like)
+    like = models.ManyToManyField('users.CustomUser', related_name='likes', blank=True)
     def __str__(self):
         return f'{self.page}  {self.created_at}'
-    @property
-    def total_likes(self):
-        return self.likes.count()
+
 

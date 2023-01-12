@@ -10,10 +10,15 @@ class IsOwnerOrAdminOrReadOnly(permissions.BasePermission):
                 return False
         if request.method in permissions.SAFE_METHODS:
             return True
+        if request.method == 'POST':
+            print(request.headers)
+            return True
         return bool(obj.owner == request.user or request.user and request.user.is_staff)
 
 class IsPostOwnerOrAdminOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS :
+            return True
+        if request.method == 'PUT':
             return True
         return bool(obj.page.owner == request.user or request.user and request.user.is_staff)

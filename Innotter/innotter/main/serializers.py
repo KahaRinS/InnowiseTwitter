@@ -1,11 +1,8 @@
 import io
 from rest_framework import serializers
-from rest_framework.parsers import JSONParser
-from rest_framework.renderers import JSONRenderer
-from . import services as likes_services
+
 
 from .models import Page, Post, Tag
-from users.models import CustomUser
 
 class PageSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -22,12 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
     pages = Page.objects.all()
     class Meta:
         model = Post
-        fields = ('content', 'reply_to', 'total_likes')
-    def get_is_fan(self, obj) -> bool:
-        """Проверяет, лайкнул ли `request.user` твит (`obj`).
-        """
-        user = self.context.get('request').user
-        return likes_services.is_fan(obj, user)
+        fields = ('content', 'reply_to','like',)
 
     def create(self, validated_data):
         pages = Page.objects.all()
@@ -46,18 +38,7 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = '__all__'
 
-class FanSerializer(serializers.ModelSerializer):
-    full_name = serializers.SerializerMethodField()
 
-    class Meta:
-        model = CustomUser
-        fields = (
-            'username',
-            'full_name',
-        )
-
-    def get_full_name(self, obj):
-        return obj.get_full_name()
 
 class FollowSerializer(serializers.ModelSerializer):
     class Meta:
