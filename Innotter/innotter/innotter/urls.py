@@ -30,11 +30,10 @@ RouterTag.register(r'tag', TagViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('api/v1/', include(RouterPage.urls)),
     path('api/v1/', include(RouterPost.urls)),
     path('api/v1/', include(RouterTag.urls)),
-
-
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 
