@@ -44,5 +44,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     # path('api/v1/users/', include('users.urls')),
     path('api/v1/', include(RouterRegister.urls)),
+    path('login/', LoginView.as_view(), name='login'),
+    path('refresh/', RefreshView.as_view(), name='refresh'),
 ]
 

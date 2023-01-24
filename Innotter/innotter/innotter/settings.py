@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
     'rest_auth',
-    'django.contrib.sites',
+    # 'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -156,6 +156,17 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 STATICFILES_DIRS = [
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'users.authentication.SafeJWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated', # make all endpoints private
+    )
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

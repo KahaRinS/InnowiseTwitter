@@ -51,7 +51,7 @@ class CustomUser(AbstractUser):
     is_blocked = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     objects = CustomUserManager()
     #
     def save(self, *args, **kwargs):
