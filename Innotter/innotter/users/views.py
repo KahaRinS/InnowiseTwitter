@@ -1,55 +1,28 @@
-from django.shortcuts import render
-from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
+from rest_framework.decorators import permission_classes, action
 from rest_framework import generics, viewsets, status
-from .serializers import *
+from users.serializers import LoginSerializer, RefreshSerializer, UserUpdateSerializer, CustomRegisterSerializer, \
+    UserDetailSerializer, UserSerializer
 from rest_framework.response import Response
-from rest_framework import permissions
 from users.models import CustomUser
-import json
-from rest_framework.permissions import *
-from django.http import HttpResponse
+from rest_framework.permissions import AllowAny
 
 
 # Create your views here.
 
-class CreateUserAPIView(APIView):
-    # Allow any user (authenticated or not) to access this url
-    # permission_classes = ()
-
-    def post(self, request):
-        user = request.data
-        serializer = UserSerializer(data=user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
-    def get_serializer_class(self):
-        if self.request.method == 'PUT':
-            return UserUpdateSerializer
-        if self.request.method == 'POST':
-            return CustomRegisterSerializer
-        if self.request.user.is_authenticated:
-            if self.request.user.role == 'admin' or self.request.user.role == 'moderator':
-                return UserDetailSerializer
-            else:
-                if self.request.user.role == 'user':
-                    return UserSerializer
-        else:
-            return UserSerializer
 
-class UserRegisterViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomRegisterSerializer
+    @action(methods=['post'], detail=False, permission_classes=[AllowAny])
+    def register(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-class LoginView(APIView):
-    permission_classes = (AllowAny,)
-
-    def post(self, request, format=None):
+    @action(methods=['post'], detail=False, permission_classes=[AllowAny])
+    def login(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             response_data = serializer.save()
@@ -59,9 +32,8 @@ class LoginView(APIView):
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class RefreshView(APIView):
-
-    def post(self, request, format=None):
+    @action(methods=['post'], detail=False, permission_classes=[AllowAny])
+    def refresh(self, request):
         serializer = RefreshSerializer(data=request.data)
         if serializer.is_valid():
             response_data = serializer.save()
@@ -70,3 +42,17 @@ class RefreshView(APIView):
             return response
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get_serializer_class(self):
+        if self.request.method == 'PUT':
+            return UserUpdateSerializer
+        if self.request.method == 'POST':
+            return CustomRegisterSerializer
+        if self.request.user.is_authenticated:
+            if self.request.user.role == 'admin' or self.request.user.role == 'moderator':
+                return UserDetailSerializer
+            elif self.request.user.role == 'user':
+                return UserSerializer
+        else:
+            return UserSerializer
+

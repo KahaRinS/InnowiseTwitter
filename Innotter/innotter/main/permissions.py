@@ -11,7 +11,6 @@ class IsOwnerOrAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         if request.method == 'POST':
-            print(request.headers)
             return True
         return bool(obj.owner == request.user or request.user and request.user.is_staff)
 

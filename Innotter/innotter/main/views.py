@@ -1,11 +1,10 @@
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .models import Post, Page, Tag
-from users.models import CustomUser
 from rest_framework import generics, viewsets, status
-from .serializers import *
-from .permissions import IsOwnerOrAdminOrReadOnly, IsPostOwnerOrAdminOrReadOnly
-from .mixins import LikedMixin, FollowMixin
+from main.serializers import PageSerializer, PageAdminSerializer, TagSerializer, PostSerializer, PostAdminSerializer
+from main.permissions import IsOwnerOrAdminOrReadOnly, IsPostOwnerOrAdminOrReadOnly
+from main.mixins import LikedMixin, FollowMixin
 
 
 
@@ -19,7 +18,6 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 
 
     def retrieve(self, request, *args, **kwargs):
-        print(request.content_type)
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         if instance.is_private and not(request.user.is_staff) and not(instance.owner == request.user):
@@ -27,10 +25,9 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
-        print(request.user.role)
         queryset = self.filter_queryset(self.get_queryset())
         if not request.user.is_staff:
-            queryset = queryset.filter(is_private=True)
+            queryset = queryset.filter(is_private=False)
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

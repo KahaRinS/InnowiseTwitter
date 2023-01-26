@@ -16,14 +16,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = CustomUser
         fields = ('email', 'first_name', 'last_name')
-        # extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True}}
         read_only_fields = ('email',)
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = CustomUser
         fields = ('email', 'first_name', 'last_name')
-        # extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {'password': {'write_only': True}}
         read_only_fields = ('email',)
 
 class UserDetailSerializer(serializers.ModelSerializer):

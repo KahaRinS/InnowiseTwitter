@@ -1,10 +1,10 @@
-from django.urls import path
-from . import views
-# from django.conf.urls import url, patterns
+from rest_framework import routers
+from users.views import UserViewSet
+from django.urls import path, include
 
-from .views import CreateUserAPIView
+Router = routers.SimpleRouter()
+Router.register(r'page', UserViewSet)
 
 urlpatterns = [
-    # url(r'^create/$', CreateUserAPIView.as_view()),
-    path('create/', CreateUserAPIView.as_view()),
+    path('', include(Router.urls)),
 ]

@@ -15,36 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from main.views import *
-from users.views import *
-from rest_framework import routers
 
-RouterUser = routers.SimpleRouter()
-RouterUser.register(r'user', UserViewSet)
 
-RouterRegister = routers.SimpleRouter()
-RouterRegister.register(r'reg', UserRegisterViewSet)
-
-RouterPage = routers.SimpleRouter()
-RouterPage.register(r'page', PageViewSet)
-
-RouterPost = routers.SimpleRouter()
-RouterPost.register(r'post', PostViewSet)
-
-RouterTag = routers.SimpleRouter()
-RouterTag.register(r'tag', TagViewSet)
+api_v1_urls = [
+    path('api/v1/', include('users.urls')),
+    path('api/v1/', include('main.urls')),
+    path('api/v1/drf-auth/', include('rest_framework.urls')),
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/drf-auth/', include('rest_framework.urls')),
-    path('api/v1/', include(RouterPage.urls)),
-    path('api/v1/', include(RouterPost.urls)),
-    path('api/v1/', include(RouterTag.urls)),
-    path('api/v1/', include(RouterUser.urls)),
+    path('', include(api_v1_urls)),
     path('accounts/', include('django.contrib.auth.urls')),
-    # path('api/v1/users/', include('users.urls')),
-    path('api/v1/', include(RouterRegister.urls)),
-    path('login/', LoginView.as_view(), name='login'),
-    path('refresh/', RefreshView.as_view(), name='refresh'),
 ]
 

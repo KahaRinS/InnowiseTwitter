@@ -8,7 +8,7 @@ class PageSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Page
-        fields = ('name', 'is_private', 'uuid', 'description', 'tags', 'image', 'owner', 'followers')
+        fields = ('id','name', 'is_private', 'uuid', 'description', 'tags', 'image', 'owner', 'followers')
 
 class PageAdminSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,12 +19,10 @@ class PostSerializer(serializers.ModelSerializer):
     pages = Page.objects.all()
     class Meta:
         model = Post
-        fields = ('content', 'reply_to','like',)
+        fields = ('id','content', 'reply_to','like',)
 
     def create(self, validated_data):
-        pages = Page.objects.all()
-        print(self.context['request'].user.id)
-        validated_data['page'] = pages.get(owner = self.context['request'].user.id)
+        validated_data['page'] = Page.objects.all().get(owner = self.context['request'].user.id)
 
         return Post.objects.create(**validated_data)
 
