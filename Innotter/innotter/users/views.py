@@ -1,11 +1,11 @@
-from rest_framework.decorators import permission_classes, action
-from rest_framework import generics, viewsets, status
-from users.serializers import LoginSerializer, RefreshSerializer, UserUpdateSerializer, CustomRegisterSerializer, \
-    UserDetailSerializer, UserSerializer
+from rest_framework import generics, status, viewsets
+from rest_framework.decorators import action, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from users.models import CustomUser
-from rest_framework.permissions import AllowAny
-
+from users.serializers import (CustomRegisterSerializer, LoginSerializer,
+                               RefreshSerializer, UserDetailSerializer,
+                               UserSerializer, UserUpdateSerializer)
 
 # Create your views here.
 

@@ -1,12 +1,13 @@
+from main.mixins import FollowMixin, LikedMixin
+from main.models import Page, Post, Tag
+from main.permissions import (IsOwnerOrAdminOrReadOnly,
+                              IsPostOwnerOrAdminOrReadOnly)
+from main.serializers import (PageAdminSerializer, PageSerializer,
+                              PostAdminSerializer, PostSerializer,
+                              TagSerializer)
+from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from .models import Post, Page, Tag
-from rest_framework import generics, viewsets, status
-from main.serializers import PageSerializer, PageAdminSerializer, TagSerializer, PostSerializer, PostAdminSerializer
-from main.permissions import IsOwnerOrAdminOrReadOnly, IsPostOwnerOrAdminOrReadOnly
-from main.mixins import LikedMixin, FollowMixin
-
-
 
 # Create your views here.
 
@@ -44,8 +45,6 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
         self.perform_update(serializer)
 
         if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
@@ -64,21 +63,16 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly)
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
 class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,IsPostOwnerOrAdminOrReadOnly)
     def create(self, request, *args, **kwargs):
-        pages = Page.objects.all()
-        user_has_page = 0
-        context = {'request': request}
-        for page in pages:
-            if page.owner == request.user:
-                user_has_page = 1
+        user_has_page = Page.objects.filter(owner=request.user).exists()
         if user_has_page:
-            serializer = PostSerializer(data=request.data, context=context)
+            serializer = PostSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)

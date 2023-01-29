@@ -1,11 +1,11 @@
 import os
-from rest_framework import serializers
-from .models import CustomUser
 from datetime import datetime, timedelta
-from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from django.utils.translation import gettext_lazy as _
+
 import jwt
+from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
+from users.models import CustomUser
 
 JWT_SECRET = os.environ.get('SECRET_KEY')
 JWT_ACCESS_TTL = 60 * 5
@@ -30,10 +30,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta(object):
         model = CustomUser
         fields = ('is_active', 'is_staff', 'role', 'email', 'first_name', 'last_name')
-        # read_only_fields = ('is_active', 'is_staff', 'role')
-        # extra_kwargs = {
-        #     'password': {'write_only': True}
-        # }
 
 class CustomRegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -127,7 +123,6 @@ class RefreshSerializer(serializers.Serializer):
         # print(refresh_token)
         try:
             payload = jwt.decode(refresh_token, JWT_SECRET, algorithms=['HS256'])
-            print(payload)
             if payload['type'] != 'refresh':
                 error_msg = {'refresh_token': _('Token type is not refresh!')}
                 raise serializers.ValidationError(error_msg)

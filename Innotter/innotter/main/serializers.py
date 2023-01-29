@@ -1,8 +1,8 @@
 import io
+
+from main.models import Page, Post, Tag
 from rest_framework import serializers
 
-
-from .models import Page, Post, Tag
 
 class PageSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
