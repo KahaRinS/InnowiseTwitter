@@ -23,7 +23,6 @@ class PostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['page'] = Page.objects.all().get(owner = self.context['request'].user.id)
-
         return Post.objects.create(**validated_data)
 
 class PostAdminSerializer(serializers.ModelSerializer):

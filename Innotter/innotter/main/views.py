@@ -71,8 +71,9 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,IsPostOwnerOrAdminOrReadOnly)
     def create(self, request, *args, **kwargs):
         user_has_page = Page.objects.filter(owner=request.user).exists()
+        context = {'request': request}
         if user_has_page:
-            serializer = PostSerializer(data=request.data)
+            serializer = PostSerializer(data=request.data, context=context)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)

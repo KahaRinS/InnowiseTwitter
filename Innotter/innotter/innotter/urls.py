@@ -18,7 +18,7 @@ from django.urls import include, path
 
 api_v1_urls = [
     path('', include('users.urls')),
-    path('', include('main.urls')),
+    path('', include('main.urls'), name='main'),
     path('drf-auth/', include('rest_framework.urls')),
 ]
 
