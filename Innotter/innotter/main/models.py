@@ -28,8 +28,8 @@ class Page(models.Model):
         return self.name
 
 class Like(models.Model):
-    user = models.ForeignKey('users.CustomUser', related_name="userlike", on_delete=models.CASCADE)
-    course = models.ForeignKey('main.Post', related_name="postlike", on_delete=models.CASCADE)
+    user = models.ForeignKey('users.CustomUser', related_name="like", on_delete=models.CASCADE)
+    post = models.ForeignKey('main.Post', related_name="like", on_delete=models.CASCADE, null=True)
 
 
 class Post(models.Model):
@@ -38,7 +38,7 @@ class Post(models.Model):
     reply_to = models.ForeignKey('main.Post', on_delete=models.SET_NULL, null=True, blank=True, related_name='replies')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    like = models.ManyToManyField('users.CustomUser', related_name='likes', blank=True, through="Like")
+    likes = models.ManyToManyField('users.CustomUser', related_name='posts', blank=True, through="Like")
     def __str__(self):
         return f'{self.page}  {self.created_at}'
 

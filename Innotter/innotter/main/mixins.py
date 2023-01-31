@@ -1,10 +1,9 @@
 # likes/api/mixins.py
+from main.services import FollowService, LikeService
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import *
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
-from .services import FollowService, LikeService
 
 
 class LikedMixin:
