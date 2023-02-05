@@ -9,6 +9,8 @@ django-allauth = "*"
 django-cors-headers = "*"
 pyjwt = "*"
 isort = "*"
+coreapi = "*"
+pyyaml = "*"
 
 [dev-packages]
 

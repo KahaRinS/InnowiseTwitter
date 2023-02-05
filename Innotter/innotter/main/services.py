@@ -1,10 +1,11 @@
 class LikeService:
     def add_like(obj, user):
-        obj.like.add(user)
+        print(user)
+        obj.likes.add(user)
         return obj
 
     def remove_like(obj, user):
-        obj.like.remove(user)
+        obj.likes.remove(user)
         return obj
 
 class FollowService:
