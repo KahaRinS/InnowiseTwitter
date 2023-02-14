@@ -16,9 +16,7 @@ class SafeJWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
 
         User = get_user_model()
-        authorization_heaader = request.META.get('Authorization')
-        if authorization_heaader is None:
-            authorization_heaader = request.headers.get('Authorization')
+        authorization_heaader = request.META.get('Authorization') or request.headers.get('Authorization')
 
 
         if not authorization_heaader:

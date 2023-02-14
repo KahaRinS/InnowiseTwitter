@@ -1,6 +1,5 @@
 class LikeService:
     def add_like(obj, user):
-        print(user)
         obj.likes.add(user)
         return obj
 
