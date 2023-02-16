@@ -4,11 +4,16 @@ from main.models import Page, Post, Tag
 from rest_framework import serializers
 
 
-class PageSerializer(serializers.ModelSerializer):
+class PageGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('name', 'is_private', 'uuid', 'description', 'image', 'owner', 'followers')
+
+class PagePostPutSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Page
-        fields = ('id','name', 'is_private', 'uuid', 'description', 'tags', 'image','owner', 'followers')
+        fields = ('name', 'is_private', 'uuid', 'description', 'tags', 'image', 'owner')
 
 class PageAdminSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
@@ -16,15 +21,20 @@ class PageAdminSerializer(serializers.ModelSerializer):
         model = Page
         fields = '__all__'
 
-class PostSerializer(serializers.ModelSerializer):
+class PostPutSerializer(serializers.ModelSerializer):
     pages = Page.objects.all()
     class Meta:
         model = Post
-        fields = ('id','content', 'reply_to','likes')
+        fields = ('content', 'reply_to')
 
     def create(self, validated_data):
         validated_data['page'] = Page.objects.all().get(owner = self.context['request'].user.id)
         return Post.objects.create(**validated_data)
+
+class PostGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('content', 'reply_to','likes')
 
 class PostAdminSerializer(serializers.ModelSerializer):
     class Meta:

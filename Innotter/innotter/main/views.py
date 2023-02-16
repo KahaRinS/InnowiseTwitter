@@ -2,19 +2,17 @@ from main.mixins import FollowMixin, LikedMixin
 from main.models import Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
                               IsPostOwnerOrAdminOrReadOnly)
-from main.serializers import (PageAdminSerializer, PageSerializer,
-                              PostAdminSerializer, PostSerializer,
-                              TagSerializer)
+from main.serializers import (PageAdminSerializer, PageGetSerializer,
+                              PagePostPutSerializer, PostAdminSerializer,
+                              TagSerializer, PostPutSerializer, PostGetSerializer)
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-# Create your views here.
-
 
 class PageViewSet(FollowMixin,viewsets.ModelViewSet):
     queryset = Page.objects.all()
-    serializer_class = PageSerializer
+    serializer_class = PageGetSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly)
 
 
@@ -64,11 +62,14 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.user.is_authenticated:
             if self.request.user.role == 'user':
-                return PageSerializer
-            else:
+                if self.request.method == 'GET':
+                    return PageGetSerializer
+                elif self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'PATCH':
+                    return PagePostPutSerializer
+            if self.request.user.role == 'admin' or self.request.user.is_staff:
                 return PageAdminSerializer
         else:
-            return PageSerializer
+            return PageGetSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -78,13 +79,12 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,IsPostOwnerOrAdminOrReadOnly)
     def create(self, request, *args, **kwargs):
         user_has_page = Page.objects.filter(owner=request.user).exists()
         context = {'request': request}
         if user_has_page:
-            serializer = PostSerializer(data=request.data, context=context)
+            serializer = self.get_serializer(data=request.data, context=context)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
@@ -95,8 +95,11 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.user.is_authenticated:
             if self.request.user.role == 'user':
-                return PostSerializer
-            else:
+                if self.request.method == 'GET':
+                    return PostGetSerializer
+                elif self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'PATCH':
+                    return PostPutSerializer
+            if self.request.user.role == 'admin' or self.request.user.is_staff:
                 return PostAdminSerializer
         else:
-            return PostSerializer
+            return PostGetSerializer
