@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "24e2aee1eb9193b6421f70ff1af5c785f8402ff871d18d7fd33d51276c6026d3"
+            "sha256": "fdfc299ba462cd5f6c9c2b6e45643e7b49d7c6e1b121739f7cf8e91d00985460"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,11 +26,19 @@
         },
         "django": {
             "hashes": [
-                "sha256:0b223bfa55511f950ff741983d408d78d772351284c75e9f77d2b830b6b4d148",
-                "sha256:d38a4e108d2386cb9637da66a82dc8d0733caede4c83c4afdbda78af4214211b"
+                "sha256:44f714b81c5f190d9d2ddad01a532fe502fa01c4cb8faf1d081f4264ed15dcd8",
+                "sha256:f2f431e75adc40039ace496ad3b9f17227022e8b11566f4b363da44c7e44761e"
             ],
             "index": "pypi",
-            "version": "==4.1.4"
+            "version": "==4.1.7"
+        },
+        "django-cors-headers": {
+            "hashes": [
+                "sha256:37e42883b5f1f2295df6b4bba96eb2417a14a03270cb24b2a07f021cd4487cf4",
+                "sha256:f9dc6b4e3f611c3199700b3e5f3398c28757dcd559c2f82932687f3d0443cfdf"
+            ],
+            "index": "pypi",
+            "version": "==3.13.0"
         },
         "django-environ": {
             "hashes": [
@@ -125,12 +133,20 @@
             "index": "pypi",
             "version": "==2.9.5"
         },
+        "pyjwt": {
+            "hashes": [
+                "sha256:69285c7e31fc44f68a1feb309e948e0df53259d579295e6cfe2b1792329f05fd",
+                "sha256:d83c3d892a77bbb74d3e1a2cfa90afaadb60945205d1095d9221f04466f64c14"
+            ],
+            "index": "pypi",
+            "version": "==2.6.0"
+        },
         "pytz": {
             "hashes": [
-                "sha256:7ccfae7b4b2c067464a6733c6261673fdb8fd1be905460396b97a073e9fa683a",
-                "sha256:93007def75ae22f7cd991c84e02d434876818661f8df9ad5df9e950ff4e52cfd"
+                "sha256:01a0681c4b9684a28304615eba55d1ab31ae00bf68ec157ec3708a8182dbbcd0",
+                "sha256:78f4f37d8198e0627c5f1143240bb0206b8691d8d7ac6d78fee88b78733f8c4a"
             ],
-            "version": "==2022.7"
+            "version": "==2022.7.1"
         },
         "sqlparse": {
             "hashes": [
