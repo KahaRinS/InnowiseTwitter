@@ -21,7 +21,7 @@ class PageAdminSerializer(serializers.ModelSerializer):
         model = Page
         fields = '__all__'
 
-class PostPutSerializer(serializers.ModelSerializer):
+class PostCreateSerializer(serializers.ModelSerializer):
     pages = Page.objects.all()
     class Meta:
         model = Post
@@ -30,6 +30,12 @@ class PostPutSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['page'] = Page.objects.all().get(owner = self.context['request'].user.id)
         return Post.objects.create(**validated_data)
+
+class PostUpdateSerializer(serializers.ModelSerializer):
+    pages = Page.objects.all()
+    class Meta:
+        model = Post
+        fields = ('content', 'reply_to')
 
 class PostGetSerializer(serializers.ModelSerializer):
     class Meta:

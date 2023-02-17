@@ -1,10 +1,12 @@
+from django.contrib.auth import get_user_model
 from main.mixins import FollowMixin, LikedMixin
 from main.models import Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
                               IsPostOwnerOrAdminOrReadOnly)
 from main.serializers import (PageAdminSerializer, PageGetSerializer,
                               PagePostPutSerializer, PostAdminSerializer,
-                              TagSerializer, PostPutSerializer, PostGetSerializer)
+                              PostCreateSerializer, PostGetSerializer,
+                              PostUpdateSerializer, TagSerializer)
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -60,13 +62,14 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 
 
     def get_serializer_class(self):
+        User = get_user_model()
         if self.request.user.is_authenticated:
-            if self.request.user.role == 'user':
-                if self.request.method == 'GET':
+            if self.request.user.role == User.Roles.USER:
+                if self.action == 'retrieve' or self.action == 'list':
                     return PageGetSerializer
-                elif self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'PATCH':
+                elif self.action == 'create' or self.action == 'update':
                     return PagePostPutSerializer
-            if self.request.user.role == 'admin' or self.request.user.is_staff:
+            if self.request.user.role == User.Roles.ADMIN or self.request.user.is_staff:
                 return PageAdminSerializer
         else:
             return PageGetSerializer
@@ -75,7 +78,6 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, )
 
 class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -93,13 +95,22 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
             return Response({'error': 'User has not page'})
 
     def get_serializer_class(self):
+        User = get_user_model()
+        print(self.action)
         if self.request.user.is_authenticated:
-            if self.request.user.role == 'user':
-                if self.request.method == 'GET':
+            if self.request.user.role == User.Roles.USER:
+                if self.action == 'retrieve' or self.action == 'list':
                     return PostGetSerializer
-                elif self.request.method == 'POST' or self.request.method == 'PUT' or self.request.method == 'PATCH':
-                    return PostPutSerializer
-            if self.request.user.role == 'admin' or self.request.user.is_staff:
-                return PostAdminSerializer
+                elif self.action == 'create':
+                    return PostCreateSerializer
+                elif self.action == 'update':
+                    return PostUpdateSerializer
+            if self.request.user.role == User.Roles.ADMIN or self.request.user.is_staff:
+                if self.action == 'retrieve' or self.action == 'list':
+                    return PostAdminSerializer
+                elif self.action == 'create':
+                    return PostCreateSerializer
+                elif self.action == 'update':
+                    return PostAdminSerializer
         else:
             return PostGetSerializer

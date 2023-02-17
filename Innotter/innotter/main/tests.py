@@ -13,7 +13,7 @@ class MainTests(APITestCase):
         user = CustomUser.objects.create_superuser(email='slavakah1@gmail.com', password='slava1234',
                                                    first_name='SLava', last_name='Kulak', username='Admin')
         Page.objects.create(name='TestPage', uuid='123456', description='just description for test page', owner=user)
-        self.loginurl = f'{reverse("user-list")}login/'
+        self.loginurl = reverse('user-login')
         self.pageurl = reverse('page-list')
         self.posturl = reverse('post-list')
 

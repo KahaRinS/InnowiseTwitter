@@ -3,6 +3,7 @@ from main.models import Tag
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 from users.models import CustomUser
+from users.views import *
 
 
 class MainTests(APITestCase):
@@ -10,9 +11,9 @@ class MainTests(APITestCase):
     def setUp(self):
         Tag.objects.create(name='Innotter')
         CustomUser.objects.create_superuser(email='slavakah1@gmail.com', password='slava1234', first_name='SLava', last_name='Kulak')
-        self.loginurl = f'{reverse("user-list")}login/'
-        self.registerurl = f'{reverse("user-list")}register/'
-        self.refreshurl = f'{reverse("user-list")}refresh/'
+        self.loginurl = reverse('user-login')
+        self.refreshurl = reverse('user-refresh')
+        self.registerurl = reverse('user-register')
         self.tagurl = reverse('tag-list')
 
 
