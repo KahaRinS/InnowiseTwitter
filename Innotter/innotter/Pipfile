@@ -12,6 +12,7 @@ pyjwt = "*"
 django-cors-headers = "*"
 
 [dev-packages]
+isort = "*"
 
 [requires]
 python_version = "3.11"
