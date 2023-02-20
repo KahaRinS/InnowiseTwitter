@@ -1,22 +1,33 @@
+from django.contrib.auth import get_user_model
 from main.mixins import FollowMixin, LikedMixin
 from main.models import Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
                               IsPostOwnerOrAdminOrReadOnly)
-from main.serializers import (PageAdminSerializer, PageSerializer,
-                              PostAdminSerializer, PostSerializer,
-                              TagSerializer)
+from main.serializers import (PageAdminSerializer, PageGetSerializer,
+                              PagePostPutSerializer, PostAdminSerializer,
+                              PostCreateSerializer, PostGetSerializer,
+                              PostUpdateSerializer, TagSerializer)
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
-# Create your views here.
-
 
 class PageViewSet(FollowMixin,viewsets.ModelViewSet):
     queryset = Page.objects.all()
-    serializer_class = PageSerializer
+    serializer_class = PageGetSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly)
 
+
+    def create(self, request, *args, **kwargs):
+        user_has_page = Page.objects.filter(owner=request.user).exists()
+        if user_has_page:
+            return Response({'error': 'User already have a page'}, status= status.HTTP_409_CONFLICT)
+        else:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -51,29 +62,31 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 
 
     def get_serializer_class(self):
+        User = get_user_model()
         if self.request.user.is_authenticated:
-            if self.request.user.role == 'user':
-                return PageSerializer
-            else:
+            if self.request.user.role == User.Roles.USER:
+                if self.action == 'retrieve' or self.action == 'list':
+                    return PageGetSerializer
+                elif self.action == 'create' or self.action == 'update':
+                    return PagePostPutSerializer
+            if self.request.user.role == User.Roles.ADMIN or self.request.user.is_staff:
                 return PageAdminSerializer
         else:
-            return PageSerializer
+            return PageGetSerializer
 
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly, )
 
 class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,IsPostOwnerOrAdminOrReadOnly)
     def create(self, request, *args, **kwargs):
         user_has_page = Page.objects.filter(owner=request.user).exists()
         context = {'request': request}
         if user_has_page:
-            serializer = PostSerializer(data=request.data, context=context)
+            serializer = self.get_serializer(data=request.data, context=context)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
@@ -82,10 +95,22 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
             return Response({'error': 'User has not page'})
 
     def get_serializer_class(self):
+        User = get_user_model()
+        print(self.action)
         if self.request.user.is_authenticated:
-            if self.request.user.role == 'user':
-                return PostSerializer
-            else:
-                return PostAdminSerializer
+            if self.request.user.role == User.Roles.USER:
+                if self.action == 'retrieve' or self.action == 'list':
+                    return PostGetSerializer
+                elif self.action == 'create':
+                    return PostCreateSerializer
+                elif self.action == 'update':
+                    return PostUpdateSerializer
+            if self.request.user.role == User.Roles.ADMIN or self.request.user.is_staff:
+                if self.action == 'retrieve' or self.action == 'list':
+                    return PostAdminSerializer
+                elif self.action == 'create':
+                    return PostCreateSerializer
+                elif self.action == 'update':
+                    return PostAdminSerializer
         else:
-            return PostSerializer
+            return PostGetSerializer

@@ -58,13 +58,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'main.apps.MainConfig',
     'rest_framework',
-    'rest_framework.authtoken',
     'corsheaders',
-    'rest_auth',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'rest_auth.registration',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -164,7 +158,7 @@ REST_FRAMEWORK = {
         'users.authentication.SafeJWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': (
-
+        'rest_framework.permissions.IsAuthenticated',
     )
 }
 

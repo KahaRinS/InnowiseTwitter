@@ -26,8 +26,8 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
             response_data = serializer.save()
-            response = Response(data=response_data)
-            response.set_cookie(key='refreshtoken', value=response_data['refresh'], httponly=True)
+            response = Response(data=response_data, status=status.HTTP_200_OK)
+            response.set_cookie(key='refresh', value=response_data['refresh'], httponly=True)
             return response
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -37,8 +37,8 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = RefreshSerializer(data=request.data)
         if serializer.is_valid():
             response_data = serializer.save()
-            response = Response(data=response_data)
-            response.set_cookie(key='refreshtoken', value=response_data['refresh'], httponly=True)
+            response = Response(data=response_data, status=status.HTTP_200_OK)
+            response.set_cookie(key='refresh', value=response_data['refresh'], httponly=True)
             return response
 
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
