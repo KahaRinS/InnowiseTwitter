@@ -1,7 +1,7 @@
 from django.contrib import admin
-
-from .models import Page,Tag,Post
+from main.models import Like, Page, Post, Tag
 
 admin.site.register(Page)
 admin.site.register(Tag)
 admin.site.register(Post)
+admin.site.register(Like)

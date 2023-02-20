@@ -1,17 +1,48 @@
 import io
+
+from main.models import Page, Post, Tag
 from rest_framework import serializers
-from rest_framework.parsers import JSONParser
-from rest_framework.renderers import JSONRenderer
 
-from .models import Page, Post, Tag
 
-class PageSerializer(serializers.ModelSerializer):
+class PageGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('name', 'is_private', 'uuid', 'description', 'image', 'owner', 'followers')
+
+class PagePostPutSerializer(serializers.ModelSerializer):
+    owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Page
+        fields = ('name', 'is_private', 'uuid', 'description', 'tags', 'image', 'owner')
+
+class PageAdminSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Page
         fields = '__all__'
 
-class PostSerializer(serializers.ModelSerializer):
+class PostCreateSerializer(serializers.ModelSerializer):
+    pages = Page.objects.all()
+    class Meta:
+        model = Post
+        fields = ('content', 'reply_to')
+
+    def create(self, validated_data):
+        validated_data['page'] = Page.objects.all().get(owner = self.context['request'].user.id)
+        return Post.objects.create(**validated_data)
+
+class PostUpdateSerializer(serializers.ModelSerializer):
+    pages = Page.objects.all()
+    class Meta:
+        model = Post
+        fields = ('content', 'reply_to')
+
+class PostGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('content', 'reply_to','likes')
+
+class PostAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
@@ -22,3 +53,10 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
+class FollowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = (
+            'followers'
+        )
