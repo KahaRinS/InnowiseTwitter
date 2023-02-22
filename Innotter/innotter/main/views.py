@@ -16,6 +16,30 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 
+class NewsViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostGetSerializer
+    def list(self, request, *args, **kwargs):
+        AllPosts = self.filter_queryset(self.get_queryset())
+        AllPages = Page.objects.all()
+        UserFollows = AllPages.filter(followers=request.user)
+        Posts = []
+        for post in AllPosts:
+            for page in UserFollows:
+                if post.page == page:
+                   Posts.append(post)
+        print(Posts)
+        serializer = self.get_serializer(Posts, many=True)
+        return Response(serializer.data)
+    def create(self, request):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def update(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def destroy(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageGetSerializer
