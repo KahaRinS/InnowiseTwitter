@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 from turtle import home
 
+import django_filters.rest_framework
 import environ
 
 env = environ.Env()
@@ -59,6 +60,7 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'rest_framework',
     'corsheaders',
+    'django_filters',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -152,6 +154,9 @@ STATICFILES_DIRS = [
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+      'django_filters.rest_framework.DjangoFilterBackend',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',

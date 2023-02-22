@@ -1,7 +1,9 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from users.filters import UserFilter
 from users.models import CustomUser
 from users.serializers import (CustomRegisterSerializer, LoginSerializer,
                                RefreshSerializer, UserDetailSerializer,
@@ -11,6 +13,8 @@ from users.serializers import (CustomRegisterSerializer, LoginSerializer,
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = UserFilter
     queryset = CustomUser.objects.all()
 
     @action(methods=['post'], detail=False, permission_classes=[AllowAny])

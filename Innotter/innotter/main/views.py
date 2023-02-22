@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
-from main.mixins import FollowMixin, LikedMixin
+from rest_framework.decorators import action
+
+from main.mixins import FollowMixin, LikedMixin, UuidMixin
 from main.models import Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
                               IsPostOwnerOrAdminOrReadOnly)
@@ -7,15 +9,19 @@ from main.serializers import (PageAdminSerializer, PageGetSerializer,
                               PagePostPutSerializer, PostAdminSerializer,
                               PostCreateSerializer, PostGetSerializer,
                               PostUpdateSerializer, TagSerializer)
+from main.filters import PageFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, status, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 
-class PageViewSet(FollowMixin,viewsets.ModelViewSet):
+class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageGetSerializer
+    filter_backends = (DjangoFilterBackend, )
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly)
+    filterset_class = PageFilter
 
 
     def create(self, request, *args, **kwargs):
@@ -60,6 +66,14 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'])
+    def uuid(self, request, pk=None):
+        uuid = pk
+        instance = self.get_queryset().get(uuid=uuid)
+        serializer = self.get_serializer(instance)
+        if instance.is_private and not (request.user.is_staff) and not (instance.owner == request.user):
+            return Response({'error': 'Page is private', 'name': instance.name})
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         User = get_user_model()
@@ -96,7 +110,6 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         User = get_user_model()
-        print(self.action)
         if self.request.user.is_authenticated:
             if self.request.user.role == User.Roles.USER:
                 if self.action == 'retrieve' or self.action == 'list':
