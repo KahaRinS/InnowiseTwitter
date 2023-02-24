@@ -34,11 +34,4 @@ class FollowMixin:
         FollowService.delete_follow(obj, request.user)
         return Response(status=status.HTTP_201_CREATED)
 
-class UuidMixin:
-    @action(detail=True, methods=['get'])
-    def uuid(self, request, pk=None):
-        uuid = pk
-        print(self.get_queryset().object)
-        obj = self.get_queryset().objects.get(uuid=uuid)
-        return Response([obj])
 

@@ -1,6 +1,5 @@
 from django.urls import include, path
-
-from main.views import PageViewSet, PostViewSet, TagViewSet, NewsViewSet
+from main.views import NewsViewSet, PageViewSet, PostViewSet, TagViewSet
 from rest_framework import routers
 
 router = routers.SimpleRouter()

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
-from rest_framework.decorators import action
-
-from main.mixins import FollowMixin, LikedMixin, UuidMixin
+from django_filters.rest_framework import DjangoFilterBackend
+from main.filters import PageFilter
+from main.mixins import FollowMixin, LikedMixin
 from main.models import Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
                               IsPostOwnerOrAdminOrReadOnly)
@@ -9,36 +9,18 @@ from main.serializers import (PageAdminSerializer, PageGetSerializer,
                               PagePostPutSerializer, PostAdminSerializer,
                               PostCreateSerializer, PostGetSerializer,
                               PostUpdateSerializer, TagSerializer)
-from main.filters import PageFilter
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, mixins
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 
-class NewsViewSet(viewsets.ModelViewSet):
+class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostGetSerializer
     def list(self, request, *args, **kwargs):
-        AllPosts = self.filter_queryset(self.get_queryset())
-        AllPages = Page.objects.all()
-        UserFollows = AllPages.filter(followers=request.user)
-        Posts = []
-        for post in AllPosts:
-            for page in UserFollows:
-                if post.page == page:
-                   Posts.append(post)
-        print(Posts)
-        serializer = self.get_serializer(Posts, many=True)
+        serializer = self.get_serializer(self.filter_queryset(self.get_queryset()).filter(page__in=Page.objects.all().filter(followers=request.user)), many=True)
         return Response(serializer.data)
-    def create(self, request):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    def retrieve(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    def update(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
-    def destroy(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
@@ -95,7 +77,7 @@ class PageViewSet(FollowMixin, viewsets.ModelViewSet):
         uuid = pk
         instance = self.get_queryset().get(uuid=uuid)
         serializer = self.get_serializer(instance)
-        if instance.is_private and not (request.user.is_staff) and not (instance.owner == request.user):
+        if instance.is_private and not (request.user.is_staff) and request.user is not instance.owner:
             return Response({'error': 'Page is private', 'name': instance.name})
         return Response(serializer.data)
 
@@ -107,7 +89,7 @@ class PageViewSet(FollowMixin, viewsets.ModelViewSet):
                     return PageGetSerializer
                 elif self.action == 'create' or self.action == 'update':
                     return PagePostPutSerializer
-            if self.request.user.role == User.Roles.ADMIN or self.request.user.is_staff:
+            if self.request.user.role in (User.Roles.ADMIN, User.Roles.MODERATOR):
                 return PageAdminSerializer
         else:
             return PageGetSerializer

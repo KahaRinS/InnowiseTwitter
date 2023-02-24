@@ -10,7 +10,7 @@ class MainTests(APITestCase):
 
     def setUp(self):
         Tag.objects.create(name='Innotter')
-        CustomUser.objects.create_superuser(email='slavakah1@gmail.com', password='slava1234', first_name='SLava', last_name='Kulak')
+        CustomUser.objects.create_superuser(email='slavakah1@gmail.com', username='ADMINUSER', password='slava1234', first_name='SLava', last_name='Kulak')
         self.loginurl = reverse('user-login')
         self.refreshurl = reverse('user-refresh')
         self.registerurl = reverse('user-register')
@@ -43,8 +43,8 @@ class MainTests(APITestCase):
 
     def test_user_fail_registration(self):
         response = self.client.post(self.registerurl,
-                                   {'email': 'slavakah3@gmail.com', 'username': 'test_fail_user',
-                                    'first_name': 'SLava', 'last_name': 'Kulak'}, format='json')
+                                   {'first_name': 'SLava', 'last_name': 'Kulak'}, format='json')
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 

@@ -1,9 +1,11 @@
 from django.contrib.auth import get_user_model
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, mixins
 from rest_framework.decorators import action, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from users.filters import UserFilter
 from users.models import CustomUser
 from users.serializers import (CustomRegisterSerializer, LoginSerializer,
@@ -13,7 +15,11 @@ from users.serializers import (CustomRegisterSerializer, LoginSerializer,
 # Create your views here.
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = UserFilter
     queryset = CustomUser.objects.all()
@@ -52,10 +58,10 @@ class UserViewSet(viewsets.ModelViewSet):
         User = get_user_model()
         if self.action == 'update':
             return UserUpdateSerializer
-        if self.action == 'create':
+        if self.action == 'register':
             return CustomRegisterSerializer
         if self.request.user.is_authenticated:
-            if self.request.user.role == User.Roles.ADMIN or self.request.user.role == User.Roles.MODERATOR:
+            if self.request.user.role in (User.Roles.ADMIN, User.Roles.MODERATOR):
                 return UserDetailSerializer
             elif self.request.user.role == User.Roles.USER:
                 return UserSerializer
