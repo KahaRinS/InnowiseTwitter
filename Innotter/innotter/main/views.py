@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from django.core.exceptions import ObjectDoesNotExist
 from main.filters import PageFilter
 from main.mixins import FollowMixin, LikedMixin
 from main.models import Page, Post, Tag
@@ -77,7 +79,10 @@ class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def uuid(self, request, pk=None):
         uuid = pk
-        instance = self.get_queryset().get(uuid=uuid)
+        try:
+            instance = self.get_queryset().get(uuid=uuid)
+        except ObjectDoesNotExist:
+            return Response({'error': 'UUID incorrect'})
         serializer = self.get_serializer(instance)
         if instance.is_private and not (request.user.is_staff) and request.user is not instance.owner:
             return Response({'error': 'Page is private', 'name': instance.name})
