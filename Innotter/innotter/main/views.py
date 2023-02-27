@@ -19,7 +19,9 @@ class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostGetSerializer
     def list(self, request, *args, **kwargs):
-        serializer = self.get_serializer(self.filter_queryset(self.get_queryset()).filter(page__in=Page.objects.all().filter(followers=request.user)), many=True)
+        all_pages = Page.objects.all()
+        filtered_posts = self.filter_queryset(self.get_queryset()).filter(page__in=all_pages.filter(followers=request.user))
+        serializer = self.get_serializer(filtered_posts, many=True)
         return Response(serializer.data)
 
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
