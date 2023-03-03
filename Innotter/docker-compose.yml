@@ -1,4 +1,5 @@
 version: '3.9'
+
 services:
   web:
     build:
@@ -10,8 +11,13 @@ services:
       - '8000:8000'
     env_file:
       - ./innotter/.env.dev
+    environment:
+      - CELERY_URL=amqp://guest:guest@rabbitmq:5672//
     depends_on:
       - db
+    networks:
+      - microservices
+
   db:
     image: postgres:14.6-alpine
     volumes:
@@ -20,6 +26,41 @@ services:
       - POSTGRES_USER=DATABASE_USER
       - POSTGRES_PASSWORD=DATABASE_PASS
       - POSTGRES_DB=DATABASE_NAME
+    networks:
+      - microservices
+
+
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    hostname: rabbitmq
+    restart: always
+    networks:
+      - microservices
+
+  worker:
+    restart: always
+    build:
+      context: ./innotter
+    volumes:
+      - ./workervol:/var/lib/worker/data/
+    command:  celery -A innotter.celery worker -l info
+    env_file:
+      - ./innotter/.env.dev
+    environment:
+      - CELERY_RESULT_BACKEND=rpc://
+    depends_on:
+      - db
+      - rabbitmq
+      - web
+    networks:
+      - microservices
+
+networks:
+  microservices:
+    name: microservices
 
 volumes:
   postgres_data:

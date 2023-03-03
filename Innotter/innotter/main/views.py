@@ -1,5 +1,9 @@
+import os
+import time
+
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from celery.result import AsyncResult
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.exceptions import ObjectDoesNotExist
 from main.filters import PageFilter
@@ -15,15 +19,25 @@ from rest_framework import generics, status, viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-
+from innotter.tasks import my_task
 
 class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostGetSerializer
     def list(self, request, *args, **kwargs):
+        tas = my_task.delay()
+        print(tas.id)
+        print(tas)
+        task = AsyncResult(tas.id)
+
+        time.sleep(2)
+        print(task.status)
+        print(task.result)
+        print(os.environ.get('CELERY_URL'))
         all_pages = Page.objects.all()
         filtered_posts = self.filter_queryset(self.get_queryset()).filter(page__in=all_pages.filter(followers=request.user))
         serializer = self.get_serializer(filtered_posts, many=True)
+
         return Response(serializer.data)
 
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
