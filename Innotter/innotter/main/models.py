@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import (GenericForeignKey,
                                                 GenericRelation)
@@ -11,8 +13,8 @@ class Tag(models.Model):
         return self.name
 
 class Page(models.Model):
-    name = models.CharField(max_length=80,  unique=True)
-    uuid = models.CharField(max_length=30, unique=True)
+    uuid = models.CharField(default=uuid.uuid4, editable=False, max_length=36)
+    name = models.CharField(max_length=80, unique=True)
     description = models.TextField()
     tags = models.ManyToManyField('main.Tag', related_name='pages', blank=True)
     owner = models.OneToOneField('users.CustomUser', on_delete=models.CASCADE, related_name='pages')

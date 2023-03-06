@@ -1,4 +1,8 @@
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from django.core.exceptions import ObjectDoesNotExist
+from main.filters import PageFilter
 from main.mixins import FollowMixin, LikedMixin
 from main.models import Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
@@ -7,21 +11,36 @@ from main.serializers import (PageAdminSerializer, PageGetSerializer,
                               PagePostPutSerializer, PostAdminSerializer,
                               PostCreateSerializer, PostGetSerializer,
                               PostUpdateSerializer, TagSerializer)
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, mixins
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 
-class PageViewSet(FollowMixin,viewsets.ModelViewSet):
+class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostGetSerializer
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def get_queryset(self):
+        queryset = super(NewsViewSet, self).get_queryset()
+        return queryset.filter(page__in=Page.objects.all().filter(followers=self.request.user))
+
+class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageGetSerializer
+    filter_backends = (DjangoFilterBackend, )
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrAdminOrReadOnly)
+    filterset_class = PageFilter
 
 
     def create(self, request, *args, **kwargs):
         user_has_page = Page.objects.filter(owner=request.user).exists()
         if user_has_page:
-            return Response({'error': 'User already have a page'}, status= status.HTTP_409_CONFLICT)
+            return Response({'error': 'User already have a page'}, status=status.HTTP_409_CONFLICT)
         else:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
@@ -60,6 +79,17 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'])
+    def uuid(self, request, pk=None):
+        uuid = pk
+        try:
+            instance = self.get_queryset().get(uuid=uuid)
+        except ObjectDoesNotExist:
+            return Response({'error': 'UUID incorrect'})
+        serializer = self.get_serializer(instance)
+        if instance.is_private and not (request.user.is_staff) and request.user is not instance.owner:
+            return Response({'error': 'Page is private', 'name': instance.name})
+        return Response(serializer.data)
 
     def get_serializer_class(self):
         User = get_user_model()
@@ -69,7 +99,7 @@ class PageViewSet(FollowMixin,viewsets.ModelViewSet):
                     return PageGetSerializer
                 elif self.action == 'create' or self.action == 'update':
                     return PagePostPutSerializer
-            if self.request.user.role == User.Roles.ADMIN or self.request.user.is_staff:
+            if self.request.user.role in (User.Roles.ADMIN, User.Roles.MODERATOR):
                 return PageAdminSerializer
         else:
             return PageGetSerializer
@@ -96,7 +126,6 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         User = get_user_model()
-        print(self.action)
         if self.request.user.is_authenticated:
             if self.request.user.role == User.Roles.USER:
                 if self.action == 'retrieve' or self.action == 'list':

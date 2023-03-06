@@ -10,6 +10,7 @@ djangorestframework = "*"
 django-environ = "*"
 pyjwt = "*"
 django-cors-headers = "*"
+django-filter = "*"
 
 [dev-packages]
 isort = "*"

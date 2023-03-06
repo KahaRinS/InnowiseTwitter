@@ -7,13 +7,13 @@ from rest_framework import serializers
 class PageGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
-        fields = ('name', 'is_private', 'uuid', 'description', 'image', 'owner', 'followers')
+        fields = ('name', 'is_private', 'description', 'image', 'owner', 'followers')
 
 class PagePostPutSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
     class Meta:
         model = Page
-        fields = ('name', 'is_private', 'uuid', 'description', 'tags', 'image', 'owner')
+        fields = ('name', 'is_private', 'description', 'tags', 'image', 'owner')
 
 class PageAdminSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
