@@ -38,6 +38,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
         if serializer.is_valid():
             response_data = serializer.save()
             response = Response(data=response_data, status=status.HTTP_200_OK)
+            response.set_cookie(key='Authorization', value=response_data['access'], httponly=True)
             response.set_cookie(key='refresh', value=response_data['refresh'], httponly=True)
             return response
 
@@ -49,6 +50,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
         if serializer.is_valid():
             response_data = serializer.save()
             response = Response(data=response_data, status=status.HTTP_200_OK)
+            response.set_cookie(key='Authorization', value=response_data['access'], httponly=True)
             response.set_cookie(key='refresh', value=response_data['refresh'], httponly=True)
             return response
 

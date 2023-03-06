@@ -1,6 +1,6 @@
 import os
 import time
-
+import pika
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from celery.result import AsyncResult
@@ -25,20 +25,13 @@ class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostGetSerializer
     def list(self, request, *args, **kwargs):
-        tas = my_task.delay()
-        print(tas.id)
-        print(tas)
-        task = AsyncResult(tas.id)
-
-        time.sleep(2)
-        print(task.status)
-        print(task.result)
-        print(os.environ.get('CELERY_URL'))
-        all_pages = Page.objects.all()
-        filtered_posts = self.filter_queryset(self.get_queryset()).filter(page__in=all_pages.filter(followers=request.user))
-        serializer = self.get_serializer(filtered_posts, many=True)
-
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    def get_queryset(self):
+        queryset = super(NewsViewSet, self).get_queryset()
+        return queryset.filter(page__in=Page.objects.all().filter(followers=self.request.user))
 
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
@@ -84,7 +77,6 @@ class PageViewSet(FollowMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-
         if getattr(instance, '_prefetched_objects_cache', None):
             instance._prefetched_objects_cache = {}
 
