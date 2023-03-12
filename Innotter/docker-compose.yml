@@ -4,17 +4,18 @@ services:
   web:
     build:
       context: ./innotter
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8090
     volumes:
       - ./innotter/:/usr/src/app/innotter
     ports:
-      - '8000:8000'
+      - '8090:8090'
     env_file:
       - ./innotter/.env.dev
     environment:
       - CELERY_URL=amqp://guest:guest@rabbitmq:5672//
     depends_on:
       - db
+      - rabbitmq
     networks:
       - microservices
 

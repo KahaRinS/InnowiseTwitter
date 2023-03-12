@@ -1,25 +1,25 @@
-import os
-import time
-import pika
-from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from celery.result import AsyncResult
-from django_filters.rest_framework import DjangoFilterBackend
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from main.filters import PageFilter
+from main.microservice import update
 from main.mixins import FollowMixin, LikedMixin
-from main.models import Page, Post, Tag
+from main.models import Like, Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
                               IsPostOwnerOrAdminOrReadOnly)
+from main.producer import publish
 from main.serializers import (PageAdminSerializer, PageGetSerializer,
                               PagePostPutSerializer, PostAdminSerializer,
                               PostCreateSerializer, PostGetSerializer,
                               PostUpdateSerializer, TagSerializer)
-from rest_framework import generics, status, viewsets, mixins
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from innotter.tasks import my_task
+
 
 class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
@@ -123,6 +123,7 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
+            update(request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         else:
             return Response({'error': 'User has not page'})
@@ -142,7 +143,7 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
                     return PostAdminSerializer
                 elif self.action == 'create':
                     return PostCreateSerializer
-                elif self.action == 'update':
+                elif self.action == 'update' or 'partial_update':
                     return PostAdminSerializer
         else:
             return PostGetSerializer
