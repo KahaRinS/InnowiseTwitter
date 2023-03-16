@@ -31,11 +31,8 @@ services:
     - 8001:8001
     volumes:
       - ./dynamodb:/data
-    environment:
-      - DYNAMO_ENDPOINT=http://ddb:8000
-      - AWS_REGION=example
-      - AWS_ACCESS_KEY_ID=example
-      - AWS_SECRET_ACCESS_KEY=example
+    env_file:
+      - ./.env
     depends_on:
       - ddb
     networks:

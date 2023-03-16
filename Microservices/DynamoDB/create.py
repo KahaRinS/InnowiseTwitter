@@ -1,5 +1,6 @@
 import boto3
 from DynamoDB.db import initialize_client_db, initialize_db
+import logging
 
 db = initialize_db()
 ddb = initialize_client_db()
@@ -8,7 +9,7 @@ ddb = initialize_client_db()
 def generate_table():
     response = ddb.list_tables()
 
-    if not 'Pages' in response['TableNames']:
+    if 'Pages' not in response['TableNames']:
         db.create_table(
             TableName='Pages',
             KeySchema=[
@@ -28,6 +29,6 @@ def generate_table():
                 'WriteCapacityUnits': 5
             }
         )
-        print('Successfully created table Recipes')
+        logging.info('Successfully created table Recipes')
     else:
-        print('Table already exists')
+        logging.info('Table already exists')

@@ -44,7 +44,6 @@ class MainTests(APITestCase):
     def test_user_fail_registration(self):
         response = self.client.post(self.registerurl,
                                    {'first_name': 'SLava', 'last_name': 'Kulak'}, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 

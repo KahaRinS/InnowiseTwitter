@@ -7,4 +7,5 @@ from innotter.celery import app
 
 @shared_task
 def my_task():
+    print('haho')
     return True

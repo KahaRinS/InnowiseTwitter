@@ -5,13 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="499ffba2-22d3-4ba3-a7b7-d6a1d050abbc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/InnowiseTwitter.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/innotter/celery.py" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/innotter/innotter/celery.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/innotter/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/innotter/innotter/tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/main/concumer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/main/microservice.py" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/innotter/main/microservice.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/main/producer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/innotter/main/producer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/innotter/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Innotter/innotter/users/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/Innotter/innotter/users/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Microservices/DynamoDB/create.py" beforeDir="false" afterPath="$PROJECT_DIR$/Microservices/DynamoDB/create.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Microservices/DynamoDB/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/Microservices/DynamoDB/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Microservices/consumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/Microservices/consumer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Microservices/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/Microservices/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Microservices/router/recipes.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +39,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true"
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "/Users/vaceslavkahanovskij/Study/Innowise/InnowiseTwitter"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />

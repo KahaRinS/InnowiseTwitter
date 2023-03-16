@@ -25,6 +25,7 @@ class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = Post.objects.all()
     serializer_class = PostGetSerializer
     def list(self, request, *args, **kwargs):
+        task = my_task.delay()
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
@@ -143,7 +144,7 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
                     return PostAdminSerializer
                 elif self.action == 'create':
                     return PostCreateSerializer
-                elif self.action == 'update' or 'partial_update':
+                elif self.action in ('update', 'partial_update'):
                     return PostAdminSerializer
         else:
             return PostGetSerializer

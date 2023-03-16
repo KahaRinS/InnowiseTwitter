@@ -11,8 +11,6 @@ services:
       - '8090:8090'
     env_file:
       - ./innotter/.env.dev
-    environment:
-      - CELERY_URL=amqp://guest:guest@rabbitmq:5672//
     depends_on:
       - db
       - rabbitmq
@@ -50,8 +48,6 @@ services:
     command:  celery -A innotter.celery worker -l info
     env_file:
       - ./innotter/.env.dev
-    environment:
-      - CELERY_RESULT_BACKEND=rpc://
     depends_on:
       - db
       - rabbitmq

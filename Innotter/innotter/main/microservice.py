@@ -7,4 +7,4 @@ def update(owner):
     likes = Like.objects.filter(post__page__owner=owner).count()
     posts = Post.objects.filter(page__owner = owner).count()
     subscribers = Page.objects.get(owner = owner).followers.all().count()
-    publish('quote_created', {'page_id': page_id, 'subscribers': subscribers, 'posts': posts, 'likes': likes})
+    publish('quote_created', {'page_id': page_id, 'subscribers': subscribers, 'posts': posts, 'likes': likes}, 'like')
