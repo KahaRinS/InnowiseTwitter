@@ -22,3 +22,10 @@ def initialize_client_db() -> ServiceResource:
          config=botocore.config.Config(signature_version=botocore.UNSIGNED))
 
     return ddb
+def initialize_client_ses():
+    ses_client = boto3.client(
+        'ses',
+        region_name='eu-west-1',
+        endpoint_url='http://localstack:4566'
+    )
+    return ses_client

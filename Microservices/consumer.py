@@ -4,7 +4,7 @@ import os
 import logging
 
 import aio_pika
-from DynamoDB.crud import add
+from aws.crud import add
 from dotenv import load_dotenv
 
 load_dotenv()

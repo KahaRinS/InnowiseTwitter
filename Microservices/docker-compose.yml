@@ -20,7 +20,7 @@ services:
       - .env
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./entrypoint_localstack.sh:/docker-entrypoint-initaws.d/entrypoint_localstack.sh"
+      - ./entrypoint_localstack.sh:/docker-entrypoint-initaws.d/entrypoint_localstack.sh
     networks:
       - microservices
 

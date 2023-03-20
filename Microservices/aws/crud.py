@@ -1,4 +1,4 @@
-from DynamoDB.db import initialize_db
+from aws.initialize import initialize_db
 
 
 def add(page_id, subscribers, posts, likes):

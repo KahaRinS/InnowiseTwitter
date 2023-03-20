@@ -1,5 +1,5 @@
 import boto3
-from DynamoDB.db import initialize_client_db, initialize_db
+from aws.initialize import initialize_client_db, initialize_db
 import logging
 
 db = initialize_db()
