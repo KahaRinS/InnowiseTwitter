@@ -9,6 +9,8 @@ uvicorn = "*"
 aio-pika = "*"
 boto3 = "*"
 pydantic = "*"
+environ = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

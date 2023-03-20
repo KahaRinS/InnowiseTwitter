@@ -5,6 +5,9 @@ import logging
 
 import aio_pika
 from DynamoDB.crud import add
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 async def message_handler(message: aio_pika.IncomingMessage):
@@ -18,9 +21,8 @@ async def consume():
         'amqp://guest:guest@rabbitmq/',
         loop=asyncio.get_running_loop()
     )
-
     channel = await connection.channel()
-    queue_name = os.environ.get('RABBIT_QUEUE')
+    queue_name = os.getenv('RABBIT_QUEUE')
     queue = await channel.declare_queue(queue_name, durable=True)
 
     await queue.consume(message_handler)

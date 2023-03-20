@@ -18,7 +18,6 @@ from rest_framework import generics, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from innotter.tasks import my_task
 
 
 class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):

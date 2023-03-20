@@ -12,10 +12,17 @@ def add(page_id, subscribers, posts, likes):
             'likes': likes
         }
     )
-
+def take(page_id):
+    table = initialize_db().Table('Pages')
     # Получаем запись по ее идентификатору
     response = table.get_item(
         Key={
             'page_id': page_id
         }
     )
+    return response['Item']
+
+def all_data():
+    table = initialize_db().Table('Pages')
+    response = table.scan()
+    return response

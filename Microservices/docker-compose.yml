@@ -7,34 +7,20 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - ddb
+      - localstack
     networks:
       - microservices
 
-  ddb:
-    image: amazon/dynamodb-local
-    restart: unless-stopped
+  localstack:
+    image: localstack/localstack
     ports:
-      - 8000:8000
-    user: root
-    volumes:
-      - ./dynamo_data:/home/dynamodblocal/data
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data -port 8000"
-    networks:
-      - microservices
-
-  admin:
-    build:
-      context: .
-      dockerfile: admin.Dockerfile
-    ports:
-    - 8001:8001
-    volumes:
-      - ./dynamodb:/data
+      - "4566:4566"
+      - "4571:4571"
     env_file:
-      - ./.env
-    depends_on:
-      - ddb
+      - .env
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./entrypoint_localstack.sh:/docker-entrypoint-initaws.d/entrypoint_localstack.sh"
     networks:
       - microservices
 
