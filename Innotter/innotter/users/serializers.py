@@ -115,12 +115,9 @@ class RefreshSerializer(serializers.Serializer):
     refresh = serializers.CharField(read_only=True)
 
     def validate(self, attrs):
-        # standard validation
         validated_data = super().validate(attrs)
 
-        # validate refresh
         refresh_token = validated_data['refresh_token']
-        # print(refresh_token)
         try:
             payload = jwt.decode(refresh_token, JWT_SECRET, algorithms=['HS256'])
             if payload['type'] != 'refresh':
