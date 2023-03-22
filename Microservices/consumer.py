@@ -18,7 +18,7 @@ async def message_handler(message: aio_pika.IncomingMessage):
 
 async def consume():
     connection = await aio_pika.connect_robust(
-        'amqp://guest:guest@rabbitmq/',
+        os.getenv('BROCKER_URL'),
         loop=asyncio.get_running_loop()
     )
     channel = await connection.channel()

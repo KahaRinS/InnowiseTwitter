@@ -16,7 +16,4 @@ ddb = initialize_client_db()
 async def startup_event():
     asyncio.create_task(consume())
 
-@app.get('/')
-def index():
-    return 'Hello world'
 
