@@ -5,7 +5,7 @@ from main.models import Like, Page, Post
 from main.producer import publish
 
 
-def update(owner):
+def update_page_statistics(owner):
     try:
         page = Page.objects.get(owner=owner)
         posts_count = page.posts.count()

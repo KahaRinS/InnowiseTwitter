@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from main.filters import PageFilter
-from main.microservice import update
+from main.microservice import update_page_statistics
 from main.mixins import FollowMixin, LikedMixin
 from main.models import Like, Page, Post, Tag
 from main.permissions import (IsOwnerOrAdminOrReadOnly,
@@ -31,7 +31,7 @@ class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self):
         queryset = super(NewsViewSet, self).get_queryset()
-        return queryset.filter(page__in=Page.objects.all().filter(followers=self.request.user))
+        return queryset.filter(page__in=Page.objects.filter(followers=self.request.user))
 
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
@@ -123,7 +123,7 @@ class PostViewSet(LikedMixin, viewsets.ModelViewSet):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
-            update(request.user)
+            update_page_statistics(request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         else:
             return Response({'error': 'User has not page'})

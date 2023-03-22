@@ -6,9 +6,9 @@ FROM python:3.11-alpine
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update && apk add tk-dev
+RUN apk update_page_statistics && apk add tk-dev
 
-RUN apk update \
+RUN apk update_page_statistics \
     $$ apk add postgresql-dev gcc python3-dev musl-dev
 
 WORKDIR /usr/src/app/innotter/
