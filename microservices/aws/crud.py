@@ -1,30 +1,34 @@
 import os
-from aws.initialize import initialize_db
+from aws.initialize import ServiceInitialize
 from dotenv import load_dotenv
 
 load_dotenv()
 
-def add(page_id, subscribers, posts, likes):
-    table = initialize_db().Table(os.getenv('DYNAMODB_TABLE_NAME'))
 
-    table.put_item(
-        Item={
-            'page_id': page_id,
-            'subscribers': subscribers,
-            'posts': posts,
-            'likes': likes
-        }
-    )
-def take(page_id):
-    table = initialize_db().Table(os.getenv('DYNAMODB_TABLE_NAME'))
-    response = table.get_item(
-        Key={
-            'page_id': page_id
-        }
-    )
-    return response['Item']
+class DynamoCrud:
+    db = ServiceInitialize().initialize_client_db()
+    def add(self, page_id, subscribers, posts, likes):
 
-def all_data():
-    table = initialize_db().Table(os.getenv('DYNAMODB_TABLE_NAME'))
-    response = table.scan()
-    return response
+        self.db.put_item(
+            TableName=os.getenv('DYNAMODB_TABLE_NAME'),
+            Item={
+                'page_id': {'S': page_id},
+                'subscribers': {'N': subscribers},
+                'posts': {'N': posts},
+                'likes': {'N': likes}
+            }
+        )
+    def take(self, page_id):
+        response = self.db.get_item(
+            TableName=os.getenv('DYNAMODB_TABLE_NAME'),
+            Key={
+                'page_id': {'S': page_id},
+            }
+        )
+        return response['Item']
+
+    def all_data(self):
+        response = self.db.scan(
+            TableName=os.getenv('DYNAMODB_TABLE_NAME'),
+        )
+        return response['Items']

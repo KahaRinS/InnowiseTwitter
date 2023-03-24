@@ -4,16 +4,16 @@ import os
 import logging
 
 import aio_pika
-from aws.crud import add
+from aws.crud import DynamoCrud
 from dotenv import load_dotenv
 
 load_dotenv()
-
+db = DynamoCrud()
 
 async def message_handler(message: aio_pika.IncomingMessage):
     async with message.process():
         mydata = ast.literal_eval(message.body.decode("UTF-8"))
-        add(mydata['page_id'], mydata['subscribers'], mydata['posts'], mydata['likes'])
+        db.add(mydata['page_id'], mydata['subscribers'], mydata['posts'], mydata['likes'])
 
 
 async def consume():

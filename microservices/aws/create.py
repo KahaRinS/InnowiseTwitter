@@ -1,13 +1,13 @@
 import boto3
-from aws.initialize import initialize_client_db, initialize_db
+from aws.initialize import ServiceInitialize
 import logging
 
-db = initialize_db()
-ddb = initialize_client_db()
+
+db = ServiceInitialize().initialize_client_db()
 
 
 def generate_table():
-    response = ddb.list_tables()
+    response = db.list_tables()
 
     if 'Pages' not in response['TableNames']:
         db.create_table(
