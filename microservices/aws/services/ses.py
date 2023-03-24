@@ -1,16 +1,22 @@
-from aws.initialize import ServiceInitialize
 import logging
 import os
+import boto3
 from dotenv import load_dotenv
+from aws.credentials import AWS_REGION, AWS_ENDPOINT, SES_EMAIL_HOST
 
 load_dotenv()
 
-class SimpleEmailService:
-    def email_sender(self, to_addrs, subject, body_text):
-        ses_client = ServiceInitialize().initialize_client_ses()
+class SESClient:
+    def __init__(self):
+        self.ses = boto3.client(
+            'ses',
+            region_name=AWS_REGION,
+            endpoint_url=AWS_ENDPOINT
+        )
 
-        response = ses_client.send_email(
-            Source=os.getenv('EMAIL_HOST_USER'),
+    def email_sender(self, to_addrs, subject, body_text):
+        response = self.ses.send_email(
+            Source=SES_EMAIL_HOST,
             Destination={'ToAddresses': to_addrs},
             Message={
                 'Subject': {'Data': subject},

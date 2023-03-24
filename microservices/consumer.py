@@ -4,11 +4,11 @@ import os
 import logging
 
 import aio_pika
-from aws.crud import DynamoCrud
+from aws.services.dynamodb import DynamoDBClient
 from dotenv import load_dotenv
 
 load_dotenv()
-db = DynamoCrud()
+db = DynamoDBClient()
 
 async def message_handler(message: aio_pika.IncomingMessage):
     async with message.process():
