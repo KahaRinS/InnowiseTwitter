@@ -1,19 +1,22 @@
 import ast
 import asyncio
-import os
 import logging
+import os
 
 import aio_pika
-from aws.services.dynamodb import DynamoDBClient
 from dotenv import load_dotenv
 
+from aws.services.dynamodb import db_client
+
 load_dotenv()
-db = DynamoDBClient()
+
 
 async def message_handler(message: aio_pika.IncomingMessage):
     async with message.process():
         mydata = ast.literal_eval(message.body.decode("UTF-8"))
-        db.add(mydata['page_id'], mydata['subscribers'], mydata['posts'], mydata['likes'])
+        db_client.add_page(page_id=mydata['page_id'],
+                           subscribers=mydata['subscribers'],
+                           posts=mydata['posts'], likes=mydata['likes'])
 
 
 async def consume():
@@ -28,4 +31,3 @@ async def consume():
     await queue.consume(message_handler)
 
     logging.info(f' [*] Waiting for messages on {queue_name}. To exit press CTRL+C')
-
