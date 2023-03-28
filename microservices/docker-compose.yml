@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    volumes:
+      - "./:/app"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - localstack
+    networks:
+      - microservices
+
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+      - "4571:4571"
+    env_file:
+      - .env
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./entrypoint_localstack.sh:/docker-entrypoint-initaws.d/entrypoint_localstack.sh
+    networks:
+      - microservices
+
+networks:
+  microservices:
+    name: microservices
+
+volumes:
+  dynamo_data:

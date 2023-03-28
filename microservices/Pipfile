@@ -11,6 +11,10 @@ boto3 = "*"
 pydantic = "*"
 
 [dev-packages]
+environ = "*"
+python-dotenv = "*"
+isort = "*"
+flake8 = "*"
 
 [requires]
 python_version = "3.11"
