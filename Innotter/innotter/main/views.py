@@ -29,6 +29,7 @@ class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         queryset = super(NewsViewSet, self).get_queryset()
         return queryset.filter(page__in=Page.objects.filter(followers=self.request.user))
 
+      
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
     serializer_class = PageGetSerializer
