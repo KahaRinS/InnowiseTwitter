@@ -9,3 +9,4 @@ __pycache__/
 *.log
 *.pot
 /microservices/dynamo_data/
+/Innotter/.flake8
