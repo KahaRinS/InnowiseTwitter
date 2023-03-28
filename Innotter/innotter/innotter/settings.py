@@ -11,9 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
-from turtle import home
-
-import django_filters.rest_framework
 import environ
 
 env = environ.Env()
@@ -111,7 +108,6 @@ DATABASES = {
         'PORT': '',
     }
 }
-
 
 
 # Password validation

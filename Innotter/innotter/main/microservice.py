@@ -1,7 +1,7 @@
 import logging
 
 from django.core.exceptions import ObjectDoesNotExist
-from main.models import Like, Page, Post
+from main.models import Like, Page
 from main.producer import publish
 
 

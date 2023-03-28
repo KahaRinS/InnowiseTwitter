@@ -1,16 +1,13 @@
 import uuid
-
-from django.conf import settings
-from django.contrib.contenttypes.fields import (GenericForeignKey,
-                                                GenericRelation)
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
 class Tag(models.Model):
     name = models.CharField(max_length=30, unique=True)
+
     def __str__(self):
         return self.name
+
 
 class Page(models.Model):
     uuid = models.CharField(default=uuid.uuid4, editable=False, max_length=36)
@@ -29,6 +26,7 @@ class Page(models.Model):
     def __str__(self):
         return self.name
 
+
 class Like(models.Model):
     user = models.ForeignKey('users.CustomUser', related_name="like", on_delete=models.CASCADE)
     post = models.ForeignKey('main.Post', related_name="like", on_delete=models.CASCADE, null=True)
@@ -41,7 +39,6 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     likes = models.ManyToManyField('users.CustomUser', related_name='posts', blank=True, through="Like")
+
     def __str__(self):
         return f'{self.page}  {self.created_at}'
-
-
