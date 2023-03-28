@@ -27,7 +27,7 @@ class NewsViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     def get_queryset(self):
         queryset = super(NewsViewSet, self).get_queryset()
-        return queryset.filter(page__in=Page.objects.all().filter(followers=self.request.user))
+        return queryset.filter(page__in=Page.objects.filter(followers=self.request.user))
 
 class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     queryset = Page.objects.all()
@@ -40,7 +40,8 @@ class PageViewSet(FollowMixin, viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         user_has_page = Page.objects.filter(owner=request.user).exists()
         if user_has_page:
-            return Response({'error': 'User already have a page'}, status=status.HTTP_409_CONFLICT)
+            return Response({'error': 'User already have a page'}, 
+                            status=status.HTTP_409_CONFLICT)
         else:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
