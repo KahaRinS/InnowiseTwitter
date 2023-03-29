@@ -10,7 +10,7 @@ class LikeService:
 
 class FollowService:
     def add_follow(self, obj, user):
-        if obj.is_private is True:
+        if obj.is_private:
             obj.follow_requests.add(user)
         else:
             obj.followers.add(user)
