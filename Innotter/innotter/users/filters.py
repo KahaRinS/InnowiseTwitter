@@ -3,7 +3,8 @@ from users.models import CustomUser
 
 
 class UserFilter(filters.FilterSet):
-    username = filters.CharFilter(field_name='username', lookup_expr='icontains')
+    username = filters.CharFilter(field_name='username',
+                                  lookup_expr='icontains')
 
     class Meta:
         model = CustomUser

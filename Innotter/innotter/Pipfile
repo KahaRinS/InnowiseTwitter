@@ -11,6 +11,8 @@ django-environ = "*"
 pyjwt = "*"
 django-cors-headers = "*"
 django-filter = "*"
+celery = "*"
+pika = "*"
 
 [dev-packages]
 isort = "*"

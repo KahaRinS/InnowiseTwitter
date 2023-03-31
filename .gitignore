@@ -5,6 +5,8 @@ __pycache__/
 *.py[cod]
 .DS_Store 
 .idea
+.idea/
 *.log
 *.pot
-tests.py
+/microservices/dynamo_data/
+/Innotter/.flake8

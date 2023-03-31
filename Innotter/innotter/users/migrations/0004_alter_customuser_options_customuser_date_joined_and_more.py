@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('users', '0003_alter_customuser_options_and_more'),
     ]
@@ -44,16 +43,24 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='customuser',
             name='is_active',
-            field=models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active'),
+            field=models.BooleanField(default=True,
+                                      help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.',
+                                      verbose_name='active'),
         ),
         migrations.AlterField(
             model_name='customuser',
             name='is_staff',
-            field=models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status'),
+            field=models.BooleanField(default=False,
+                                      help_text='Designates whether the user can log into this admin site.',
+                                      verbose_name='staff status'),
         ),
         migrations.AlterField(
             model_name='customuser',
             name='username',
-            field=models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, validators=[django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='username'),
+            field=models.CharField(error_messages={'unique': 'A user with that username already exists.'},
+                                   help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.',
+                                   max_length=150, unique=True,
+                                   validators=[django.contrib.auth.validators.UnicodeUsernameValidator()],
+                                   verbose_name='username'),
         ),
     ]
