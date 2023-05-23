@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Шаг для клонирования репозитория
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                // Шаг для установки зависимостей
+                sh 'pip install -r requirements.txt'
+            }
+        }
+    }
+}
