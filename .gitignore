@@ -10,3 +10,4 @@ __pycache__/
 *.pot
 /microservices/dynamo_data/
 /Innotter/.flake8
+jenkins_compose/
