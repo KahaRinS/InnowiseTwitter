@@ -21,17 +21,16 @@ class SafeJWTAuthentication(BaseAuthentication):
             access_token = authorization_heaader.split(' ')[1]
             payload = jwt.decode(access_token,
                                  JWT_SECRET, algorithms=['HS256'])
-
+        except jwt.exceptions.DecodeError:
+            raise exceptions.AuthenticationFailed('Smthing wrong')
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('access_token expired')
+            return None
         except IndexError:
             raise exceptions.AuthenticationFailed('Token prefix missing')
 
         user = User.objects.filter(id=payload['user_id']).first()
         if user is None:
             raise exceptions.AuthenticationFailed('User not found')
-
         if not user.is_active:
             raise exceptions.AuthenticationFailed('user is inactive')
-
         return (user, None)

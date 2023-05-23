@@ -8,6 +8,12 @@ class PageGetSerializer(serializers.ModelSerializer):
         fields = ('name', 'is_private', 'description', 'image', 'owner', 'followers')
 
 
+class PageNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Page
+        fields = ('name', )
+
+
 class PagePostPutSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
@@ -45,9 +51,11 @@ class PostUpdateSerializer(serializers.ModelSerializer):
 
 
 class PostGetSerializer(serializers.ModelSerializer):
+    page = PageNameSerializer()
+
     class Meta:
         model = Post
-        fields = ('content', 'reply_to', 'likes')
+        fields = ('content', 'reply_to', 'likes', 'page', 'created_at')
 
 
 class PostAdminSerializer(serializers.ModelSerializer):

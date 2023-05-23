@@ -13,7 +13,7 @@ from main.serializers import (PageAdminSerializer, PageGetSerializer,
                               PostUpdateSerializer, TagSerializer)
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 
 
@@ -117,8 +117,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class PostViewSet(LikedMixin, viewsets.ModelViewSet):
     queryset = Post.objects.all()
-    permission_classes = (IsAuthenticatedOrReadOnly,
-                          IsPostOwnerOrAdminOrReadOnly)
+    permission_classes = (IsAuthenticated, )
 
     def create(self, request, *args, **kwargs):
         user_has_page = Page.objects.filter(owner=request.user).exists()

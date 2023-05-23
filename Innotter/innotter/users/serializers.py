@@ -7,7 +7,7 @@ from rest_framework import serializers
 from users.models import CustomUser
 
 JWT_SECRET = os.environ.get('SECRET_KEY')
-JWT_ACCESS_TTL = 60 * 5
+JWT_ACCESS_TTL = 60 * 15
 JWT_REFRESH_TTL = 3600 * 24 * 7
 
 
@@ -37,8 +37,8 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class CustomRegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, )
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
+    # first_name = serializers.CharField(required=False)
+    # last_name = serializers.CharField(required=False)
     username = serializers.CharField(required=True)
 
     def get_cleaned_data(self):
@@ -47,15 +47,15 @@ class CustomRegisterSerializer(serializers.Serializer):
             'password': self.validated_data.get('password', ''),
             'username': self.validated_data.get('username', ''),
             'email': self.validated_data.get('email', ''),
-            'first_name': self.validated_data.get('first_name', ''),
-            'last_name': self.validated_data.get('last_name', ''),
+            # 'first_name': self.validated_data.get('first_name', ''),
+            # 'last_name': self.validated_data.get('last_name', ''),
         }
 
     def create(self, validated_data):
         user = CustomUser.objects.create(
             email=validated_data['email'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
+            # first_name=validated_data['first_name'],
+            # last_name=validated_data['last_name'],
             username=validated_data['username'],
         )
         user.set_password(validated_data['password'])
