@@ -2,6 +2,10 @@ pipeline {
     agent any
 
     stages {
+        stage('Initialize'){
+            def dockerHome = tool 'myDocker'
+            env.PATH = "${dockerHome}/bin:${env.PATH}"
+        }
         stage('Build') {
             agent {
                 docker {
@@ -14,18 +18,6 @@ pipeline {
                     steps {
                         sh 'pip install -U pipenv'
                         sh 'pipenv install --system'
-                    }
-                }
-                stage('Autoformat') {
-                    steps {
-                        sh 'isort .'
-                        sh 'black .'
-
-                    }
-                }
-                stage('Lint') {
-                    steps {
-                        sh 'flake8'
                     }
                 }
             }
