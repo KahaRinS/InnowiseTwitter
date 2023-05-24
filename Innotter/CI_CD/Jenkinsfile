@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                image 'python:3.8'
+                image 'python:3.11-alpine'
                 args "--user root --privileged"
                 }
             }
