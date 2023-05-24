@@ -1,14 +1,14 @@
 pipeline {
-    agent {
-        docker {
-                image 'python:3.8'
-                args "--user root --privileged"
-        }
-    }
+    agent any
 
     stages {
         stage('Build') {
-
+            agent {
+                docker {
+                image 'python:3.8'
+                args "--user root --privileged"
+                }
+            }
             stages {
                 stage('Install dependencies') {
                     steps {
