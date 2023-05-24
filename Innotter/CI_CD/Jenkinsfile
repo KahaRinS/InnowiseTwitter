@@ -2,18 +2,34 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Шаг для клонирования репозитория
-                checkout scm
+        stage('Build') {
+            agent {
+                docker {
+                image 'python:3.8'
+                args "--user root --privileged"
+                }
             }
-        }
+            stages {
+                stage('Install dependencies') {
+                    steps {
+                        sh 'pip install -U pipenv'
+                        sh 'pipenv install --system'
+                    }
+                }
+                stage('Autoformat') {
+                    steps {
+                        sh 'isort .'
+                        sh 'black .'
 
-        stage('Install Dependencies') {
-            steps {
-                // Шаг для установки зависимостей
-                sh 'pip install -r requirements.txt'
+                    }
+                }
+                stage('Lint') {
+                    steps {
+                        sh 'flake8'
+                    }
+                }
             }
         }
     }
 }
+
